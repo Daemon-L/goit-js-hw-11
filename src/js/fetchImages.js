@@ -1,6 +1,6 @@
 import axios from 'axios';
 export { fetchImages, firstPage };
-// export { firstPage };
+
     
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = `24425918-1c58292ec38f4df582c31de2d`;
@@ -21,7 +21,6 @@ async function fetchImages(pictureName) {
   catch (error) {
     console.log(error);
   }
-
 }
 
 function firstPage() {
