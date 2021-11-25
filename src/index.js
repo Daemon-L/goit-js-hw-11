@@ -2,7 +2,7 @@ import './css/styles.css';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { fetchImages } from "./js/fetchImages";
+import { fetchImages, firstPage } from "./js/fetchImages";
 
 const refs = {
   form: document.querySelector('#search-form'),
@@ -19,6 +19,8 @@ refs.loadMoreButton.addEventListener('click', LoadMore);
 function Search(e) {
   e.preventDefault();
   pictureName = e.currentTarget.searchQuery.value;
+
+  firstPage();
 
   hideButton(refs.loadMoreButton);
   fetchImages(pictureName).then(images => {
