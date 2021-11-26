@@ -2,7 +2,7 @@ import './css/styles.css';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { fetchImages, firstPage } from "./js/fetchImages";
+import { fetchImages, firstPage, imagesCount, RENDER_IMAGES_NUMBERS } from "./js/fetchImages";
 
 const refs = {
   form: document.querySelector('#search-form'),
@@ -11,56 +11,44 @@ const refs = {
 };
 
 let pictureName = '';
-
 hideButton(refs.loadMoreButton);
-
 refs.form.addEventListener('submit', Search);
 refs.loadMoreButton.addEventListener('click', LoadMore);
 
 function Search(e) {
   e.preventDefault();
   pictureName = e.currentTarget.searchQuery.value;
-
   firstPage();
-
   hideButton(refs.loadMoreButton);
-
   fetchImages(pictureName)
     .then(images => {
       const imagesArray = images.data.hits;
       const totalImages = images.data.totalHits;
-      // const lenghtGallery = refs.gallery.querySelectorAll('.gallery__item').length;
 
-    if (imagesArray.length === 0) {
+      if (imagesArray.length === 0) {
       return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.',);
     } else {
         clear();
         markupGallery(imagesArray);
         new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
-        Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
-        showButton(refs.loadMoreButton);
+      Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
       
-          // console.log(lenghtGallery);
-          // console.log(totalImages);
-      }
+      if (totalImages <= RENDER_IMAGES_NUMBERS) {
+            return
+        }
+        showButton(refs.loadMoreButton);
+    }
     });
 }
-
 
 function LoadMore() {
   fetchImages(pictureName)
     .then(images => {
       const imagesArray = images.data.hits;
       const totalImages = images.data.totalHits;
-      const lenghtGallery = refs.gallery.querySelectorAll('.gallery__item').length+40;
-      
       markupGallery(imagesArray);
       new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
-
-        // console.log(lenghtGallery);
-        // console.log(totalImages);
-
-      if (lenghtGallery >= totalImages) {
+      if (imagesCount >= totalImages) {
         Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
         hideButton(refs.loadMoreButton);
       }
